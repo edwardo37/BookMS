@@ -1,14 +1,15 @@
 ﻿using BookMS.Models;
 
-BookManagementSystem bms = new BookManagementSystem();
+Book.ManagementSystem BMS = new Book.ManagementSystem();
 
 // me not use TryParse, TryParse mean good practices >:(
-string input = "";
+string input = string.Empty;
 while (input != "5")
 {
     Console.WriteLine($"""
+    ----------------------
     Welcome to the Book Management System! 
-    You have {bms.getBookCount()} books in your library.
+    You have {BMS.getBookCount()} books in your library.
         1. Display all books
         2. View book by ID
         3. Add a book
@@ -24,16 +25,16 @@ while (input != "5")
         switch (input)
         {
             case "1":
-                bms.printLibrarybyID();
+                BMS.printLibrarybyID();
                 break;
             case "2":
-                validID = bms.tryGetBook();
+                validID = BMS.tryGetBook();
                 break;
             case "3":
-                bms.userAddBook();
+                BMS.userAddBook();
                 break;
             case "4":
-                validID = bms.userRemoveBook();
+                validID = BMS.userRemoveBook();
                 break;
             case "5":
                 break;
