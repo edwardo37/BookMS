@@ -1,3 +1,6 @@
+using System.Diagnostics.Contracts;
+using Microsoft.VisualBasic.FileIO;
+
 namespace BookMS.Models
 {
     /// <summary>
@@ -11,6 +14,7 @@ namespace BookMS.Models
         public string? Title { get; set; }
         public string? Author { get; set; }
         public string? Genre { get; set; }
+
 
         public void printBookInfo()
         {
@@ -40,20 +44,20 @@ namespace BookMS.Models
         /// <author>Cameron Schultz</author>
         public void printLibrarybyID()
         {
-            Console.WriteLine("All books in Library:\n----------------------");
-
             if (bookCount < 1)
             {
                 Console.WriteLine("No books in library.\n");
                 return;
             }
 
-            foreach (KeyValuePair<string, Book> book in books)
-                {
-                    // Separate because ID is not a member of book
-                    Console.WriteLine("ID: " + book.Key);
-                    book.Value.printBookInfo();
-                }
+            Console.WriteLine("All books in Library:\n----------------------");
+
+            foreach (KeyValuePair<string, Book> ID_and_Book in books)
+            {
+                // Separate because ID is not a member of book
+                Console.WriteLine("ID: " + ID_and_Book.Key);
+                ID_and_Book.Value.printBookInfo();
+            }
         }
 
         /// <summary>
@@ -63,10 +67,38 @@ namespace BookMS.Models
         public void userAddBook()
         {
             Book newBook = new Book();
+
+            // Set the book's members
             newBook.Title = HelperFunctions.GetInput("Enter the title of the book:");
             newBook.Author = HelperFunctions.GetInput("Enter the author of the book:");
             newBook.Genre = HelperFunctions.GetInput("Enter the genre of the book:");
-            string ID = HelperFunctions.GetInput("Enter the ID of the book:");
+
+            string ID = "exit";
+
+            // 'exit' cannot be used as an ID, it is reserved for exiting before a query
+            while (ID.ToLower() == "exit")
+            {
+                ID = HelperFunctions.GetInput("Enter the ID of the book:");
+
+                // 'exit' is a reserved word
+                if (ID.ToLower() == "exit")
+                {
+                    Console.WriteLine("'exit' is a reserved word. Please enter a different ID.");
+                }
+
+                // Dictionary already contains book with ID
+                else if (books.ContainsKey(ID))
+                {
+                    Console.WriteLine("ID already in use. Please enter a different ID.");
+                    ID = "exit";
+                }
+            }
+
+            // Confirm book addition (C# apparently takes care of stray instances)
+            if (HelperFunctions.GetInput("Are you sure you want to add this book? (y/n)").ToLower() == "n")
+            {
+                return;
+            }
 
             books.Add(ID, newBook);
             bookCount++;
@@ -79,14 +111,25 @@ namespace BookMS.Models
         /// <author>Cameron Schultz</author>
         public bool userRemoveBook()
         {
-            string ID = HelperFunctions.GetInput("Enter the ID of the book you want to remove:");
-            if (books.ContainsKey(ID))
+            if (bookCount < 1)
+            {
+                Console.WriteLine("No books in library.\n");
+                return true; // misleading, but if it were false it would ask continuously
+            }
+
+            string ID = HelperFunctions.GetInput("Enter the ID of the book you want to remove: (or 'exit' to return to main menu)");
+            
+            // Remove book info
+            if (books.ContainsKey(ID) && (HelperFunctions.GetInput("Are you sure you want to remove this book? (y/n)").ToLower() == "y"))
             {
                 Console.WriteLine("----------------------");
                 books.Remove(ID);
                 bookCount--;
                 return true;
             }
+            // Cancel transaction
+            else if (ID == "exit") { return true; }
+            // ID not found
             else
             {
                 Console.WriteLine("Book not found.\n");
@@ -101,13 +144,24 @@ namespace BookMS.Models
         /// <author>Cameron Schultz</author>
         public bool tryGetBook()
         {
-            string ID = HelperFunctions.GetInput("Enter the ID of the book you want to view:");
+            if (bookCount < 1)
+            {
+                Console.WriteLine("No books in library.\n");
+                return true; // misleading, but if it were false it would ask continuously
+            }
+
+            string ID = HelperFunctions.GetInput("Enter the ID of the book you want to view: (or 'exit' to return to main menu)");
+
+            // Print book info
             Console.WriteLine("----------------------");
             if (books.ContainsKey(ID))
             {
                 books[ID].printBookInfo();
                 return true;
             }
+            // Cancel transaction
+            else if (ID == "exit") { return true; }
+            // ID not found
             else
             {
                 Console.WriteLine("Book not found.");
