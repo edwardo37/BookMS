@@ -2,7 +2,6 @@
 
 Book.ManagementSystem BMS = new Book.ManagementSystem();
 
-// me not use TryParse, TryParse mean good practices >:(
 string input = string.Empty;
 while (input != "5")
 {
@@ -19,6 +18,7 @@ while (input != "5")
 
     input = HelperFunctions.GetInput("Enter a number to select an option:");
 
+    // Only some of these functions need a valid ID, so it continuously calls those until a valid ID is provided
     bool validID = true;
     do
     {
