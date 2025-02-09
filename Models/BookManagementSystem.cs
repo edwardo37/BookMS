@@ -29,7 +29,6 @@ namespace BookMS.Models
             /// <summary>
             /// Print all books stats in library, by ID
             /// </summary>
-            /// <author>Cameron Schultz</author>
             public void printLibrarybyID()
             {
                 if (bookCount < 1)
@@ -49,7 +48,6 @@ namespace BookMS.Models
             /// <summary>
             /// Putting a new book into the system, using user input
             /// </summary>
-            /// <author>Cameron Schultz</author>
             public void userAddBook()
             {
                 Book newBook = new Book();
@@ -89,8 +87,7 @@ namespace BookMS.Models
             /// <summary>
             /// Remove a book from the system, using user-fed ID
             /// </summary>
-            /// <returns>True if ID in dictionary</returns>
-            /// <author>Cameron Schultz</author>
+            /// <returns>Bool telling if ID in dictionary</returns>
             public bool userRemoveBook()
             {
                 if (bookCount < 1)
@@ -116,6 +113,7 @@ namespace BookMS.Models
 
                     books.Remove(ID);
                     bookCount--;
+                    Console.WriteLine("Book removed Succefully.");
                     return true;
                 }
                 // ID not found
@@ -129,8 +127,7 @@ namespace BookMS.Models
             /// <summary>
             /// Attempt to get book info, using user-fed ID
             /// </summary>
-            /// <returns>True if ID in dictionary</returns>
-            /// <author>Cameron Schultz</author>
+            /// <returns>Bool telling if ID in dictionary</returns>
             public bool tryGetBook(string ID = "")
             {
                 if (bookCount < 1)
@@ -171,19 +168,18 @@ namespace BookMS.Models
     }
 
     /// <summary>
-    /// Functions that make programming a little easier
+    /// Functions (not plural in this case) that make programming a little easier
     /// </summary>
     /// <author>Cameron Schultz</author>
     class HelperFunctions
     {
         /// <summary>
-        /// Get input safely
+        /// Get user input safely, with the option to require input and/or limit to 'y' or 'n'
         /// </summary>
         /// <param name="prompt">The prompt to display</param>
         /// <param name="required">If the input can be empty</param>
         /// <param name="yn">If the input should be 'y' or 'n'</param>
         /// <returns>The user input string</returns>
-        /// <author>Cameron Schultz</author>
         public static string GetInput(string prompt, bool required = true, bool yn = false)
         {
             Console.WriteLine(prompt);
