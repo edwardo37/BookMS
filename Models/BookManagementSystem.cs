@@ -41,7 +41,7 @@ namespace BookMS.Models
 
                 foreach (KeyValuePair<string, Book> ID_and_Book in books)
                 {
-                    tryGetBook(ID_and_Book.Key);
+                    tryPrintBook(ID_and_Book.Key);
                 }
             }
 
@@ -104,7 +104,7 @@ namespace BookMS.Models
                 // Remove book info
                 if (books.ContainsKey(ID))
                 {
-                    tryGetBook(ID);
+                    tryPrintBook(ID);
 
                     if (HelperFunctions.GetInput("Are you sure you want to remove this book? (y/n)", true, true).ToLower() == "n")
                     {
@@ -128,7 +128,7 @@ namespace BookMS.Models
             /// Attempt to get book info, using user-fed ID
             /// </summary>
             /// <returns>Bool telling if ID in dictionary</returns>
-            public bool tryGetBook(string ID = "")
+            public bool tryPrintBook(string ID = "")
             {
                 if (bookCount < 1)
                 {

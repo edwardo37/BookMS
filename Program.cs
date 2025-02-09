@@ -28,7 +28,7 @@ while (input != "5")
                 BMS.printLibrarybyID();
                 break;
             case "2":
-                validID = BMS.tryGetBook();
+                validID = BMS.tryPrintBook();
                 break;
             case "3":
                 BMS.userAddBook();
