@@ -182,7 +182,7 @@ namespace BookMS.Models
         /// </summary>
         /// <param name="prompt">The prompt to display</param>
         /// <param name="required">If the input can be empty</param>
-        /// <returns>string</returns>
+        /// <returns>The user input string</returns>
         /// <author>Cameron Schultz</author>
         public static string GetInput(string prompt, bool required = true)
         {
