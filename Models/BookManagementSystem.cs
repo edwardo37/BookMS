@@ -13,18 +13,11 @@ namespace BookMS.Models
         private string? Genre { get; set; }
 
 
-        public void printBookInfo()
-        {
-            Console.WriteLine("Title: " + Title);
-            Console.WriteLine("Author: " + Author);
-            Console.WriteLine("Genre: " + Genre);
-            Console.WriteLine("----------------------");
-        }
-
         /// <summary>
         /// Book Management System Class -- a library
         /// </summary>
-        /// <author> Cameron Schultz </author>
+        /// <remarks>Nested within Book to be able to access its members</remarks>
+        /// <author>Cameron Schultz</author>
         public class ManagementSystem
         {
             private Dictionary<string, Book> books = new Dictionary<string, Book>();
@@ -41,17 +34,15 @@ namespace BookMS.Models
             {
                 if (bookCount < 1)
                 {
-                    Console.WriteLine("No books in library.\n");
+                    Console.WriteLine("No books in library.");
                     return;
                 }
 
-                Console.WriteLine("All books in Library:\n----------------------");
+                Console.WriteLine("All books in Library:");
 
                 foreach (KeyValuePair<string, Book> ID_and_Book in books)
                 {
-                    // Separate because ID is not a member of book
-                    Console.WriteLine("ID: " + ID_and_Book.Key);
-                    ID_and_Book.Value.printBookInfo();
+                    tryGetBook(ID_and_Book.Key);
                 }
             }
 
@@ -68,29 +59,25 @@ namespace BookMS.Models
                 newBook.Author = HelperFunctions.GetInput("Enter the author of the book:");
                 newBook.Genre = HelperFunctions.GetInput("Enter the genre of the book:");
 
-                string ID = "exit";
-
-                // 'exit' cannot be used as an ID, it is reserved for exiting before a query
-                while (ID.ToLower() == "exit")
+                // Get a unique ID
+                string ID = string.Empty;
+                bool validID = false;
+                while (!validID)
                 {
                     ID = HelperFunctions.GetInput("Enter the ID of the book:");
 
-                    // 'exit' is a reserved word
-                    if (ID.ToLower() == "exit")
-                    {
-                        Console.WriteLine("'exit' is a reserved word. Please enter a different ID.");
-                    }
-
                     // Dictionary already contains book with ID
-                    else if (books.ContainsKey(ID))
+                    if (books.ContainsKey(ID))
                     {
                         Console.WriteLine("ID already in use. Please enter a different ID.");
-                        ID = "exit";
+                        continue;
                     }
+
+                    validID = true;
                 }
 
                 // Confirm book addition (C# apparently takes care of stray instances)
-                if (HelperFunctions.GetInput("Are you sure you want to add this book? (y/n)").ToLower() == "n")
+                if (HelperFunctions.GetInput("Are you sure you want to add this book? (y/n)", true, true).ToLower() == "n")
                 {
                     return;
                 }
@@ -108,26 +95,33 @@ namespace BookMS.Models
             {
                 if (bookCount < 1)
                 {
-                    Console.WriteLine("No books in library.\n");
-                    return true; // misleading, but if it were false it would ask continuously
+                    Console.WriteLine("No books in library.");
+                    return true; // Exit successfully
                 }
 
-                string ID = HelperFunctions.GetInput("Enter the ID of the book you want to remove: (or 'exit' to return to main menu)");
-                
+                string ID = HelperFunctions.GetInput("Enter the ID of the book you want to remove: (leave blank to return)", false);
+
+                // Cancel transaction
+                if (ID == string.Empty) { return true; }
+
                 // Remove book info
-                if (books.ContainsKey(ID) && (HelperFunctions.GetInput("Are you sure you want to remove this book? (y/n)").ToLower() == "y"))
+                if (books.ContainsKey(ID))
                 {
-                    Console.WriteLine("----------------------");
+                    tryGetBook(ID);
+
+                    if (HelperFunctions.GetInput("Are you sure you want to remove this book? (y/n)", true, true).ToLower() == "n")
+                    {
+                        return true; // Removal cancelled successfully
+                    }
+
                     books.Remove(ID);
                     bookCount--;
                     return true;
                 }
-                // Cancel transaction
-                else if (ID == "exit") { return true; }
                 // ID not found
                 else
                 {
-                    Console.WriteLine("Book not found.\n");
+                    Console.WriteLine("Book not found.");
                     return false;
                 }
             }
@@ -137,25 +131,34 @@ namespace BookMS.Models
             /// </summary>
             /// <returns>True if ID in dictionary</returns>
             /// <author>Cameron Schultz</author>
-            public bool tryGetBook()
+            public bool tryGetBook(string ID = "")
             {
                 if (bookCount < 1)
                 {
-                    Console.WriteLine("No books in library.\n");
-                    return true; // misleading, but if it were false it would ask continuously
+                    Console.WriteLine("No books in library.");
+                    return true; // Exit successfully
                 }
 
-                string ID = HelperFunctions.GetInput("Enter the ID of the book you want to view: (or 'exit' to return to main menu)");
+                if (ID == string.Empty)
+                {
+                    ID = HelperFunctions.GetInput("Enter the ID of the book you want to view: (leave empty to return)", false);
+                }
+
+                // Cancel transaction
+                // Looks suspicious, but only runs if ID is empty *after* user input
+                if (ID == string.Empty) { return true; }
 
                 // Print book info
-                Console.WriteLine("----------------------");
                 if (books.ContainsKey(ID))
                 {
-                    books[ID].printBookInfo();
+                    Console.WriteLine("->------------------<-");
+                    Console.WriteLine($"Title: {books[ID].Title}");
+                    Console.WriteLine($"Author: {books[ID].Author}");
+                    Console.WriteLine($"Genre: {books[ID].Genre}");
+                    Console.WriteLine($"ID: {ID}");
+                    Console.WriteLine("->------------------<-");
                     return true;
                 }
-                // Cancel transaction
-                else if (ID == "exit") { return true; }
                 // ID not found
                 else
                 {
@@ -178,13 +181,14 @@ namespace BookMS.Models
         /// </summary>
         /// <param name="prompt">The prompt to display</param>
         /// <param name="required">If the input can be empty</param>
+        /// <param name="yn">If the input should be 'y' or 'n'</param>
         /// <returns>The user input string</returns>
         /// <author>Cameron Schultz</author>
-        public static string GetInput(string prompt, bool required = true)
+        public static string GetInput(string prompt, bool required = true, bool yn = false)
         {
             Console.WriteLine(prompt);
 
-            string input = "";
+            string input = string.Empty;
 
             bool validInput = false;
             while (!validInput)
@@ -198,13 +202,16 @@ namespace BookMS.Models
                 {
                     Console.WriteLine("This field is required. Please enter again.");
                 }
+                else if (yn && input.ToLower() != "y" && input.ToLower() != "n")
+                {
+                    Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
+                }
                 else
                 {
                     validInput = true;
                 }
             }
 
-            Console.WriteLine();
             return input;
         }
     }

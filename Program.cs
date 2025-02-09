@@ -3,10 +3,11 @@
 Book.ManagementSystem BMS = new Book.ManagementSystem();
 
 // me not use TryParse, TryParse mean good practices >:(
-string input = "";
+string input = string.Empty;
 while (input != "5")
 {
     Console.WriteLine($"""
+    ----------------------
     Welcome to the Book Management System! 
     You have {BMS.getBookCount()} books in your library.
         1. Display all books
