@@ -9,3 +9,5 @@
 ### Entry requirements
 1. Every book has a unique ID
     * Can be any string, but ISBN or some other identifier is encouraged
+
+> Overengineered? Maybe, oh well
