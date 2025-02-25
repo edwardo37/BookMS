@@ -1,6 +1,6 @@
 ﻿using BookMS.Models;
 
-Book.ManagementSystem BMS = new Book.ManagementSystem();
+ManagementSystem BMS = new ManagementSystem();
 
 string input = string.Empty;
 while (input != "5")
@@ -16,7 +16,8 @@ while (input != "5")
         5. Exit
     """);
 
-    input = HelperFunctions.GetInput("Enter a number to select an option:");
+    Console.WriteLine("Enter a number to select an option:");
+    input = HelperFunctions.GetInput();
 
     // Only some of these functions need a valid ID, so it continuously calls those until a valid ID is provided
     bool validID = true;
