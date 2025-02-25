@@ -88,41 +88,42 @@ namespace BookMS.Models
         /// <summary>
         /// Remove a book from the system, using user-fed ID
         /// </summary>
-        /// <returns>Bool telling if ID in dictionary</returns>
-        public bool userRemoveBook()
+        public void userRemoveBook()
         {
             if (books.Count < 1)
             {
                 Console.WriteLine("No books in library.");
-                return true; // Exit successfully
+                return; // Exit successfully
             }
 
-            Console.WriteLine("Enter the ID of the book you want to remove: (leave blank to return)");
-            string ID = HelperFunctions.GetInput(false);
-
-            // Cancel transaction
-            if (ID == string.Empty) { return true; }
-
-            // Remove book info
-            if (books.ContainsKey(ID))
+            // Continues until a valid book is printed or the user aborts
+            // Normally while (true) is a bad idea, but all paths will return
+            while (true)
             {
-                tryPrintBook(ID);
+                Console.WriteLine("Enter the ID of the book you want to remove: (leave blank to return)");
+                string ID = HelperFunctions.GetInput(false);
 
-                Console.WriteLine("Are you sure you want to remove this book? (y/n)");
-                if (HelperFunctions.GetInput(true, true).ToLower() == "n")
+                // Cancel transaction
+                if (ID == string.Empty) { return; }
+
+                // Remove book info
+                if (books.ContainsKey(ID))
                 {
-                    return true; // Removal cancelled successfully
+                    tryPrintBook(ID);
+
+                    Console.WriteLine("Are you sure you want to remove this book? (y/n)");
+                    if (HelperFunctions.GetInput(true, true).ToLower() == "n")
+                    {
+                        return; // Removal cancelled successfully
+                    }
+
+                    books.Remove(ID);
+                    Console.WriteLine("Book removed Succefully.");
+                    return;
                 }
 
-                books.Remove(ID);
-                Console.WriteLine("Book removed Succefully.");
-                return true;
-            }
-            // ID not found
-            else
-            {
+                // ID not found
                 Console.WriteLine("Book not found.");
-                return false;
             }
         }
 
@@ -130,40 +131,42 @@ namespace BookMS.Models
         /// Attempt to get book info, using user-fed ID
         /// </summary>
         /// <returns>Bool telling if ID in dictionary</returns>
-        public bool tryPrintBook(string ID = "")
+        public void tryPrintBook(string ID = "")
         {
             if (books.Count < 1)
             {
                 Console.WriteLine("No books in library.");
-                return true; // Exit successfully
+                return;
             }
 
-            if (ID == string.Empty)
+            // Again, while (true) is usually a bad idea, but all paths return
+            while (true)
             {
-                Console.WriteLine("Enter the ID of the book you want to view: (leave empty to return)");
-                ID = HelperFunctions.GetInput(false);
-            }
+                if (ID == string.Empty)
+                {
+                    Console.WriteLine("Enter the ID of the book you want to view: (leave empty to return)");
+                    ID = HelperFunctions.GetInput(false);
+                }
 
-            // Cancel transaction
-            // Looks suspicious, but only runs if ID is empty *after* user input
-            if (ID == string.Empty) { return true; }
+                // Cancel transaction, if the string is STILL empty
+                if (ID == string.Empty) { return; }
 
-            // Print book info
-            if (books.ContainsKey(ID))
-            {
-                Console.WriteLine("->------------------<-");
-                Console.WriteLine($"Title: {books[ID].Title}");
-                Console.WriteLine($"Author: {books[ID].Author}");
-                Console.WriteLine($"Genre: {books[ID].Genre}");
-                Console.WriteLine($"ID: {ID}");
-                Console.WriteLine("->------------------<-");
-                return true;
-            }
-            // ID not found
-            else
-            {
+                // Print book info
+                if (books.ContainsKey(ID))
+                {
+                    Console.WriteLine("->------------------<-");
+                    Console.WriteLine($"Title: {books[ID].Title}");
+                    Console.WriteLine($"Author: {books[ID].Author}");
+                    Console.WriteLine($"Genre: {books[ID].Genre}");
+                    Console.WriteLine($"ID: {ID}");
+                    Console.WriteLine("->------------------<-");
+                    return;
+                }
+
+                // ID not found
                 Console.WriteLine("Book not found.");
-                return false;
+                // To restart loop
+                ID = string.Empty;
             }
         }
     }
