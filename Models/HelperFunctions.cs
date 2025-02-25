@@ -9,14 +9,11 @@ namespace BookMS.Models
         /// <summary>
         /// Get user input safely, with the option to require input and/or limit to 'y' or 'n'
         /// </summary>
-        /// <param name="prompt">The prompt to display</param>
         /// <param name="required">If the input can be empty</param>
         /// <param name="yn">If the input should be 'y' or 'n'</param>
         /// <returns>The user input string</returns>
-        public static string GetInput(string prompt, bool required = true, bool yn = false)
+        public static string GetInput(bool required = true, bool yn = false)
         {
-            Console.WriteLine(prompt);
-
             string input = string.Empty;
 
             bool validInput = false;
