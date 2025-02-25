@@ -8,7 +8,7 @@ while (input != "5")
     Console.WriteLine($"""
     ----------------------
     Welcome to the Book Management System! 
-    You have {BMS.getBookCount()} books in your library.
+    You have {BMS.returnBookCount()} books in your library.
         1. Display all books
         2. View book by ID
         3. Add a book

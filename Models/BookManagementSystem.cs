@@ -22,16 +22,15 @@ namespace BookMS.Models
     {
         private Dictionary<string, Book> books = new Dictionary<string, Book>();
 
-        // To avoid setting outside of class
-        private int bookCount = 0;
-        public int getBookCount() { return bookCount; }
+        // Program.cs needs the book count, for reporting it to the user
+        public int returnBookCount() { return books.Count; }
 
         /// <summary>
         /// Print all books stats in library, by ID
         /// </summary>
         public void printLibrarybyID()
         {
-            if (bookCount < 1)
+            if (books.Count < 1)
             {
                 Console.WriteLine("No books in library.");
                 return;
@@ -81,13 +80,9 @@ namespace BookMS.Models
             }
 
             Console.WriteLine("Are you sure you want to add this book? (y/n)");
-            if (HelperFunctions.GetInput(true, true).ToLower() == "n")
-            {
-                return;
-            }
+            if (HelperFunctions.GetInput(true, true).ToLower() == "n") { return; /* Cancelled successfully */ }
 
             books.Add(ID, newBook);
-            bookCount++;
         }
 
         /// <summary>
@@ -96,7 +91,7 @@ namespace BookMS.Models
         /// <returns>Bool telling if ID in dictionary</returns>
         public bool userRemoveBook()
         {
-            if (bookCount < 1)
+            if (books.Count < 1)
             {
                 Console.WriteLine("No books in library.");
                 return true; // Exit successfully
@@ -120,7 +115,6 @@ namespace BookMS.Models
                 }
 
                 books.Remove(ID);
-                bookCount--;
                 Console.WriteLine("Book removed Succefully.");
                 return true;
             }
@@ -138,7 +132,7 @@ namespace BookMS.Models
         /// <returns>Bool telling if ID in dictionary</returns>
         public bool tryPrintBook(string ID = "")
         {
-            if (bookCount < 1)
+            if (books.Count < 1)
             {
                 Console.WriteLine("No books in library.");
                 return true; // Exit successfully
