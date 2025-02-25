@@ -1,6 +1,6 @@
 ﻿using BookMS.Models;
 
-ManagementSystem BMS = new ManagementSystem();
+BookManagementSystem BMS = new BookManagementSystem();
 
 Console.WriteLine(
     """
